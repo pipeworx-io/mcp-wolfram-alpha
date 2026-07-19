@@ -3,7 +3,7 @@
   "name": "io.github.pipeworx-io/wolfram-alpha",
   "title": "Wolfram Alpha",
   "description": "Wolfram Alpha MCP — computational, factual, and quantitative queries",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "websiteUrl": "https://pipeworx.io/packs/wolfram-alpha",
   "repository": {
     "url": "https://github.com/pipeworx-io/mcp-wolfram-alpha",

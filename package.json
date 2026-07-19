@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-wolfram-alpha",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Wolfram Alpha MCP — computational, factual, and quantitative queries",
   "type": "module",
   "main": "src/index.ts",

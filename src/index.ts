@@ -78,9 +78,71 @@ const tools: McpToolExport['tools'] = [
       required: ['query'],
     },
   },
+  {
+    name: 'wolfram_compute',
+    description:
+      'Evaluate Wolfram Language code in a real Wolfram kernel — symbolic math (Integrate, Solve, DSolve, Simplify, Series, Limit), exact arithmetic, matrix algebra, number theory, unit conversion, and any Wolfram Language expression. Answers "integrate x^2 sin x", "solve this equation symbolically", "eigenvalues of this matrix". Give actual Wolfram Language code. Example: wolfram_compute({ code: "Integrate[x^2 Sin[x], x]" })',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        code: { type: 'string', description: 'Wolfram Language code to evaluate, e.g. "Solve[x^2 + 3x - 4 == 0, x]" or "Eigenvalues[{{1,2},{3,4}}]"' },
+        time_constraint_seconds: { type: 'number', description: 'Evaluation time limit in seconds, 1-60 (default 30)' },
+      },
+      required: ['code'],
+    },
+  },
 ];
 
+// wolfram_compute proxies Wolfram's free hosted MCP (agenttools.wolfram.com —
+// keyless, verified CF-reachable 2026-07-19). Kept separate from the appid API
+// below: this one evaluates real Wolfram Language, the appid API is NL-query-only.
+async function wolframCompute(args: Record<string, unknown>) {
+  const code = reqStr(args, 'code', '"Integrate[x^2 Sin[x], x]"');
+  const tc = Math.min(Math.max(Number(args.time_constraint_seconds ?? 30), 1), 60);
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), (tc + 10) * 1000);
+  try {
+    const res = await fetch('https://agenttools.wolfram.com/mcp', {
+      method: 'POST',
+      signal: ctl.signal,
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tools/call',
+        params: { name: 'WolframLanguageEvaluator', arguments: { code, timeConstraint: tc } },
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(
+        `Wolfram kernel endpoint returned HTTP ${res.status}. The hosted evaluator (agenttools.wolfram.com) may be down or rate-limiting — retry shortly, or use full_query with a natural-language phrasing instead.`,
+      );
+    }
+    const body = (await res.json()) as {
+      result?: { content?: Array<{ type: string; text?: string }>; isError?: boolean };
+      error?: { message?: string };
+    };
+    if (body.error) throw new Error(`Wolfram kernel error: ${body.error.message ?? 'unknown'}`);
+    const text = (body.result?.content ?? [])
+      .filter((c) => c.type === 'text' && c.text)
+      .map((c) => c.text as string)
+      .join('\n');
+    if (!text) throw new Error('Wolfram kernel returned no output — check the code for syntax errors.');
+    return {
+      code,
+      // "Out[1]= ..." prefix is kernel formatting; strip it for a clean result field
+      result: text.replace(/^Out\[\d+\]=\s*/, ''),
+      raw: text,
+      source: 'Wolfram Language kernel (hosted by Wolfram Research)',
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function callTool(name: string, args: Record<string, unknown>): Promise<unknown> {
+  // wolfram_compute is keyless (hosted Wolfram MCP) — no appid needed.
+  if (name === 'wolfram_compute') return wolframCompute(args);
   const appId = (args._apiKey as string | undefined)?.trim();
   if (!appId) {
     throw new Error(
@@ -89,12 +151,20 @@ async function callTool(name: string, args: Record<string, unknown>): Promise<un
   }
   switch (name) {
     case 'short_answer':
-      return shortAnswer(appId, args);
+      return shortAnswer(appId, { ...args, query: reqStr(args, 'query', '"speed of light in furlongs per fortnight"') });
     case 'full_query':
-      return fullQuery(appId, args);
+      return fullQuery(appId, { ...args, query: reqStr(args, 'query', '"derivative of sin(x)^2 cos(x)"') });
     default:
       throw new Error(`Unknown tool: ${name}`);
   }
+}
+
+function reqStr(args: Record<string, unknown>, key: string, example: string): string {
+  const v = args[key];
+  if (typeof v !== 'string' || !v.trim()) {
+    throw new Error(`Required argument "${key}" is missing or empty. Pass a string like ${example}.`);
+  }
+  return v;
 }
 
 async function shortAnswer(appId: string, args: Record<string, unknown>) {
