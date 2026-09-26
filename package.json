@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-wolfram-alpha",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Wolfram Alpha MCP — computational, factual, and quantitative queries",
   "type": "module",
   "main": "src/index.ts",
@@ -26,7 +26,7 @@
     "@cloudflare/workers-types": "^4.20260405.1"
   },
   "pipeworx": {
-    "sourceHash": "v1-cfd51535fae36dc30d0c2a5cc4c3fd057fc8c0fdb26877a7df2f1ba7f956f63a",
-    "sourceCommit": "b0fb3c31386cf0256dcf1e2f1b3440435a87ec35"
+    "sourceHash": "v1-5e7b696a60c107ee72d63d3af9188a493e83b7c0ea53af3c82ae2663db90bc66",
+    "sourceCommit": "2cb50b368da3267446f2b6f6a3ddbd3d0eed3d73"
   }
 }
