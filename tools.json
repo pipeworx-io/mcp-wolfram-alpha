@@ -1,0 +1,78 @@
+[
+  {
+    "name": "short_answer",
+    "description": "Get a single terse plain-text answer from Wolfram Alpha. Best for: arithmetic, unit conversion, \"what is X\", \"how many Y in Z\", factual lookups (planet diameter, country GDP, element atomic weight, current time in Tokyo). Returns one string.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Natural-language query"
+        },
+        "units": {
+          "type": "string",
+          "description": "metric | imperial (default metric)",
+          "enum": [
+            "metric",
+            "imperial"
+          ]
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  },
+  {
+    "name": "full_query",
+    "description": "Get the full structured result from Wolfram Alpha. Returns named \"pods\" (Input, Result, Solution, Plot, Properties, etc.) — useful when short_answer is too terse or you need multiple facets (e.g., element properties, equation solution + plot + alternate forms).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Natural-language query"
+        },
+        "units": {
+          "type": "string",
+          "description": "metric | imperial (default metric)",
+          "enum": [
+            "metric",
+            "imperial"
+          ]
+        },
+        "include_pods": {
+          "type": "string",
+          "description": "Comma-separated pod IDs to restrict (e.g., \"Result,Solution\"). Default: return all."
+        },
+        "format": {
+          "type": "string",
+          "description": "plaintext (default) | plaintext,image — plaintext is most agent-friendly."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  },
+  {
+    "name": "wolfram_compute",
+    "description": "Evaluate Wolfram Language code in a real Wolfram kernel — symbolic math (Integrate, Solve, DSolve, Simplify, Series, Limit), exact arithmetic, matrix algebra, number theory, unit conversion, and any Wolfram Language expression. Answers \"integrate x^2 sin x\", \"solve this equation symbolically\", \"eigenvalues of this matrix\". Give actual Wolfram Language code. Example: wolfram_compute({ code: \"Integrate[x^2 Sin[x], x]\" })",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Wolfram Language code to evaluate, e.g. \"Solve[x^2 + 3x - 4 == 0, x]\" or \"Eigenvalues[{{1,2},{3,4}}]\""
+        },
+        "time_constraint_seconds": {
+          "type": "number",
+          "description": "Evaluation time limit in seconds, 1-60 (default 30)"
+        }
+      },
+      "required": [
+        "code"
+      ]
+    }
+  }
+]
