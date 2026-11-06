@@ -2,7 +2,7 @@
 
 Wolfram Alpha MCP — computational, factual, and quantitative queries.
 
-Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1857+ live data sources. This is an independent, unofficial integration — not affiliated with, endorsed by, or published by the upstream provider.
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1867+ live data sources. This is an independent, unofficial integration — not affiliated with, endorsed by, or published by the upstream provider.
 
 ## Tools
 
@@ -40,8 +40,8 @@ to "permutation ≠ identity" and counts 120 − 1 = 119. The elementwise form
 
 ## Data source
 
-- Short Answers v1: `https://api.wolframalpha.com/v1/result`
-- Full Results v2: `https://api.wolframalpha.com/v2/query` (`output=JSON`)
+- Short Answers v1.
+- Full Results v2: Wolfram Alpha (`output=JSON`)
 - Wolfram Language kernel: `https://agenttools.wolfram.com/mcp` (hosted by Wolfram Research)
 
 ## Quick Start
@@ -88,7 +88,7 @@ directly, instead of just this one's:
 }
 ```
 
-Both URLs reach the same gateway and the same 1857+ data sources. The
+Both URLs reach the same gateway and the same 1867+ data sources. The
 only difference is which pack's tools are listed **directly**; `ask_pipeworx`
 reaches all of them from either one.
 

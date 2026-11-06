@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-wolfram-alpha",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Wolfram Alpha MCP — computational, factual, and quantitative queries",
   "type": "module",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
     "mode": "gateway",
     "slug": "wolfram-alpha",
     "gatewaySlug": "wolfram-alpha",
-    "sourceHash": "v1-3f16ed2c411ac018121017f10f4dbd413859f0fc2891923708b59ea8934982f9",
-    "sourceCommit": "98853f34516646cb7c4c1460f09249b262c0269e"
+    "sourceHash": "v1-274f87593610304225b940d4ace345a60365450360b40727194b8fbe53a6ac9e",
+    "sourceCommit": "78b905fa3a6880dfb85c79150f4bffe8cf50ef00"
   }
 }
